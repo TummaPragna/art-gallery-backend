@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
+//commit7
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "*")
