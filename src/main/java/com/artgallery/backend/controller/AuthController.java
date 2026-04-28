@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import com.artgallery.backend.config.JwtUtil;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -15,15 +16,31 @@ public class AuthController {
 
     @Autowired
     private UserRepository repo;
+
     @Autowired
     private PasswordEncoder encoder;
 
-    // 🔹 SIGNUP
+    // 🔹 SIGNUP (IMPROVED)
     @PostMapping("/signup")
-    public User signup(@RequestBody User user) {
-    	user.setPassword(encoder.encode(user.getPassword()));
-    	return repo.save(user);
+    public ResponseEntity<?> signup(@RequestBody User user) {
+
+        // ❗ Check if user already exists
+        if (repo.findByEmail(user.getEmail()) != null) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("User already exists");
+        }
+
+        // 🔐 Encrypt password
+        user.setPassword(encoder.encode(user.getPassword()));
+
+        // Save user
+        User savedUser = repo.save(user);
+
+        return ResponseEntity.ok(savedUser);
     }
+    @Autowired
+    private JwtUtil jwtUtil;
 
     // 🔹 LOGIN
     @PostMapping("/login")
@@ -32,10 +49,18 @@ public class AuthController {
         User existing = repo.findByEmail(user.getEmail());
 
         if (existing != null && encoder.matches(user.getPassword(), existing.getPassword())) {
-            return ResponseEntity.ok(existing);
+
+            String token = jwtUtil.generateToken(existing.getEmail(), existing.getRole());
+
+            return ResponseEntity.ok(
+                    java.util.Map.of(
+                            "token", token,
+                            "role", existing.getRole(),
+                            "name", existing.getName()
+                    )
+            );
         }
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("Invalid email or password");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
     }
 }
