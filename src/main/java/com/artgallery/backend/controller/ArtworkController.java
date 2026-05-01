@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/artworks")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "origins = https://fsad-virtual-art-gallery.vercel.app/")
 public class ArtworkController {
 
     @Autowired

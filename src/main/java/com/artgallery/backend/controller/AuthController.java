@@ -11,7 +11,7 @@ import com.artgallery.backend.config.JwtUtil;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "https://fsad-virtual-art-gallery.vercel.app/")
 public class AuthController {
 
     @Autowired
@@ -63,4 +63,5 @@ public class AuthController {
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
     }
+    //commit1
 }

@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "https://fsad-virtual-art-gallery.vercel.app/")
 public class OrderController {
 
     @Autowired
